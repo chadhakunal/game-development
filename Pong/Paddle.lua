@@ -18,7 +18,7 @@ function Paddle:init(x, y, width, height)
     self.width = width
     self.height = height
     self.dy=0
-    self.dx=0
+    -- self.dx=0
 end
 
 function Paddle:render()
@@ -32,9 +32,21 @@ function Paddle:update(dt)
         self.y = math.min(boardBottom - self.height, self.y + self.dy * dt)
     end
 
-    if self.dx<0 then
-        self.x = math.max(boardLeft, self.x + self.dx * dt)
-    elseif self.dx>0 then
-        self.x = math.min(boardRight - self.width, self.x + self.dx * dt)
+    -- if self.dx<0 then
+    --     self.x = math.max(boardLeft, self.x + self.dx * dt)
+    -- elseif self.dx>0 then
+    --     self.x = math.min(boardRight - self.width, self.x + self.dx * dt)
+    -- end
+end
+
+-- Bots
+function Paddle:Bot(ball, difficulty)
+    center = self.y + self.width/2
+    if ball.y>center then
+        self.dy = PaddleSpeed/difficulty
+    elseif ball.y<center then
+        self.dy = -PaddleSpeed/difficulty
+    else
+        self.dy = 0
     end
 end

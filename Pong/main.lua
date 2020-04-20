@@ -34,6 +34,7 @@ boardRight = GameWidth - 5
 boardHeight = boardBottom - boardTop
 
 targetPoints = 10
+gameType = 0
 
 function love.load()
     -- Original - 
@@ -170,17 +171,24 @@ function love.update(dt)
     end
 
     -- Player 1 Movement
-    if love.keyboard.isDown("w") then
-        player1.dy = -PaddleSpeed
-    elseif love.keyboard.isDown("s") then
-        player1.dy = PaddleSpeed
-    -- elseif love.keyboard.isDown("a") then
-    --     player1.dx = -PaddleSpeed
-    -- elseif love.keyboard.isDown("d") then
-    --     player1.dx = PaddleSpeed
+
+    if gameType>0 then
+        if gameState=="play" then
+            player1:Bot(ball, 4-gameType)
+        end
     else
-        player1.dy = 0
-        -- player1.dx = 0
+        if love.keyboard.isDown("w") then
+            player1.dy = -PaddleSpeed
+        elseif love.keyboard.isDown("s") then
+            player1.dy = PaddleSpeed
+        -- elseif love.keyboard.isDown("a") then
+        --     player1.dx = -PaddleSpeed
+        -- elseif love.keyboard.isDown("d") then
+        --     player1.dx = PaddleSpeed
+        else
+            player1.dy = 0
+            -- player1.dx = 0
+        end
     end
 
     -- Player 2 Movement
@@ -211,10 +219,20 @@ function love.draw()
     love.graphics.setLineStyle("rough")
     love.graphics.setFont(mediumFont)
     love.graphics.setColor(255,255,255,255)
-    love.graphics.printf('Retro Pong 2D', 0, 12 , GameWidth, 'center')
+    love.graphics.printf('Retro Pong 2D', 0, 4, GameWidth, 'center')
     love.graphics.setFont(smallFont)
-    love.graphics.printf(status, 0, 35 , GameWidth, 'center')
+    love.graphics.printf(status, 0, 40 , GameWidth, 'center')
 
+    -- Display Options
+    love.graphics.setFont(smallFont)
+    love.graphics.printf("Play Against: ", boardLeft, 23, boardRight, 'left')
+    love.graphics.printf("Friend", (boardRight-boardLeft)/5, 23, boardRight, 'left')
+    love.graphics.printf("Level 1 Bot", 2*(boardRight-boardLeft)/5, 23, boardRight, 'left')
+    love.graphics.printf("Level 2 Bot", 3*(boardRight-boardLeft)/5, 23, boardRight, 'left')
+    love.graphics.printf("Level 3 Bot", 4*(boardRight-boardLeft)/5, 23, boardRight, 'left')
+    love.graphics.line(boardLeft, 34, boardRight, 34)
+    love.graphics.rectangle('fill', (gameType+1)*(boardRight-boardLeft)/5-8, 24, 5, 5)
+    
     -- Draw Board
     -- Draw Lines
     love.graphics.line(GameWidth/2, boardTop, GameWidth/2, boardBottom)
@@ -232,8 +250,8 @@ function love.draw()
 
     -- Display Player Names
     love.graphics.setFont(smallFont)
-    love.graphics.printf("P1", boardLeft + 4, boardTop-12, boardRight, 'left')
-    love.graphics.printf("P2", boardLeft, boardTop-12, boardRight-8, 'right')
+    love.graphics.printf("P1", boardLeft + 4, boardTop-8, boardRight, 'left')
+    love.graphics.printf("P2", boardLeft, boardTop-8, boardRight-8, 'right')
 
     -- Draw Paddle 1
     player1:render()
@@ -247,7 +265,7 @@ function love.draw()
     -- Display FPS
     love.graphics.setFont(smallFont)
     love.graphics.setColor(0,255,0,255)
-    love.graphics.printf("FPS: "..tostring(love.timer.getFPS()), 5, 10, GameWidth, 'left')
+    love.graphics.printf("FPS: "..tostring(love.timer.getFPS()), 5, 1, GameWidth, 'left')
 
     push:finish()
 end
@@ -278,5 +296,9 @@ function love.keypressed(key)
             gameState = "play"
             status = "Play"
         end
+    elseif key=="left" and gameState=="start" then
+        gameType = math.max(0, gameType-1)
+    elseif key=="right" and gameState=="start" then
+        gameType = math.min(3, gameType+1)
     end
 end
