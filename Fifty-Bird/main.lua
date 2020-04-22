@@ -15,13 +15,15 @@
     as an infinitely generated obstacle course for the player.
 
     ToDo: 
+    pipe collision y logic
     Mouse Click
     Comments
-    Pause
+    Pause and its sound effect
     Medals
     Race Bird (Bot)
     Menu for Single, Race
-    Change background and bird color
+    Change background, bird image, music
+    High Score
 ]]
 
 push = require 'push'
